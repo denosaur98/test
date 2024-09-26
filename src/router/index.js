@@ -4,7 +4,7 @@ import SpaceshipPage from '@/pages/SpaceshipPage.vue'
 
 const routes = [
 	{ path: '/', component: SpaceshipList },
-	{ path: '/ship/:id', component: SpaceshipPage },
+	{ path: '/starships/:id', component: SpaceshipPage },
 ]
 
 export default createRouter({

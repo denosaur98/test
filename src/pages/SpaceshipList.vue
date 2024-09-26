@@ -3,7 +3,7 @@
     <div class="list-wrapper" v-if="spaceshipData">
       <input class="list__search" placeholder="ВВЕДИТЕ НАЗВАНИЕ КОРАБЛЯ:" v-model="searchingSpaceship">
       <div class="list__items-wrapper">
-        <RouterLink :to="`/ship/${index + 1}`" class="list__item" v-for="(spaceships, index) in spaceshipFilters" :key="spaceships.model">
+        <RouterLink :to="`/starships/${formatUrl(spaceships.url)}`" class="list__item" v-for="spaceships in spaceshipFilters" :key="spaceships.model">
           <table class="item__table">
             <tr>
               <th>Название</th>
@@ -40,6 +40,11 @@ const spaceshipFilters = computed(() => {
     spaceship.name.toLowerCase().includes(searchingSpaceship.value.toLowerCase())
   )
 })
+
+function formatUrl(url) {
+  const urlPath = url.split('/')
+  return urlPath[urlPath.length - 2]
+}
 
 onMounted(async() => {
   await store.dispatch('fetchSpaceshipData')
