@@ -1,6 +1,6 @@
 <template>
   <div class="spaceship__page">
-    
+    hello
   </div>
 </template>
 

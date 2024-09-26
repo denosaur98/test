@@ -1,13 +1,10 @@
 <template>
   <div class="app">
     <RouterView />
-    <SpaceshipList/>
-</div>
+  </div>
 </template>
 
 <script setup>
-import SpaceshipList from '/src/components/SpaceshipList';
-
 
 </script>
 
@@ -15,6 +12,11 @@ import SpaceshipList from '/src/components/SpaceshipList';
 @font-face {
   font-family: Inter;
   src: url('/src/assets/Inter.ttf');
+}
+
+a {
+  text-decoration: none;
+  color: #000;
 }
 
 * {

@@ -1,7 +1,11 @@
 import { createWebHistory, createRouter } from 'vue-router'
+import SpaceshipList from '@/pages/SpaceshipList.vue'
 import SpaceshipPage from '@/pages/SpaceshipPage.vue'
 
-const routes = [{ path: '/', component: SpaceshipPage }]
+const routes = [
+	{ path: '/', component: SpaceshipList },
+	{ path: '/ship/:id', component: SpaceshipPage },
+]
 
 export default createRouter({
 	history: createWebHistory(),
