@@ -1,6 +1,7 @@
 <template>
   <div class="spaceship__list">
     <div class="list-wrapper" v-if="spaceshipData">
+      <p class="search__copy-link">{{ searchLink }}</p>
       <input class="list__search" placeholder="ВВЕДИТЕ НАЗВАНИЕ КОРАБЛЯ:" v-model="searchingSpaceship">
       <div class="list__items-wrapper">
         <RouterLink :to="`/starships/${formatUrl(spaceships.url)}`" class="list__item" v-for="spaceships in spaceshipFilters" :key="spaceships.model">
@@ -34,12 +35,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import store from '/src/store/index.js';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const spaceshipData = computed(() => store.state.spaceshipData)
-const searchingSpaceship = ref('')
+const searchingSpaceship = ref(store.state.searchQuery)
 const spaceshipFilters = computed(() => {
   return spaceshipData.value.results.filter(spaceship =>
     spaceship.name.toLowerCase().includes(searchingSpaceship.value.toLowerCase())
@@ -47,6 +48,12 @@ const spaceshipFilters = computed(() => {
 })
 
 const router = useRouter()
+const route = useRoute()
+const searchLink = computed(() => {
+  const pageNumber = route.params.page ? parseInt(route.params.page, 10) : 1
+  const searchQuery = encodeURIComponent(searchingSpaceship.value)
+  return `${window.location.origin}/starships/page/${pageNumber}?search=${searchQuery}`
+})
 function getPageNumber(url) {
   const match = url.match(/page=(\d+)/)
   return match ? parseInt(match[1], 10) : null
@@ -57,7 +64,7 @@ async function prevStep() {
     if (pageNumber) {
       store.commit('setPageNumber', pageNumber)
       await store.dispatch('fetchSpaceshipData')
-      router.push(`/starships/page/${pageNumber}`)
+      router.push(`/starships/page/${pageNumber}?search=${searchingSpaceship.value}`)
     }
   }
 }
@@ -67,7 +74,7 @@ async function nextStep() {
     if (pageNumber) {
       store.commit('setPageNumber', pageNumber)
       await store.dispatch('fetchSpaceshipData')
-      router.push(`/starships/page/${pageNumber}`)
+      router.push(`/starships/page/${pageNumber}?search=${searchingSpaceship.value}`)
     }
   }
 }
@@ -77,8 +84,18 @@ function formatUrl(url) {
   return urlPath[urlPath.length - 2]
 }
 
-onMounted(async() => {
+onMounted(async () => {
+  const pageNumber = route.params.page ? parseInt(route.params.page, 10) : 1
+  const searchQuery = route.query.search || ''
+  store.commit('setPageNumber', pageNumber)
+  store.commit('setSearchQuery', searchQuery)
+  searchingSpaceship.value = searchQuery
   await store.dispatch('fetchSpaceshipData')
+})
+
+watch(searchingSpaceship, (newSearchQuery) => {
+  store.commit('setSearchQuery', newSearchQuery)
+  router.push(`/starships/page/${store.state.pageNumber}?search=${newSearchQuery}`)
 })
 </script>
 
@@ -100,6 +117,12 @@ onMounted(async() => {
     align-items: center;
     width: 100%;
     max-width: 1000px;
+
+    .search__copy-link {
+      font-size: 20px;
+      color: #a1a1a1;
+      margin-bottom: 20px;
+    }
 
     .list__search {
       width: 100%;

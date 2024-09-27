@@ -6,6 +6,7 @@ export default createStore({
 		return {
 			pageNumber: 1,
 			spaceshipData: null,
+			searchQuery: '',
 		}
 	},
 	mutations: {
@@ -14,6 +15,9 @@ export default createStore({
 		},
 		setPageNumber(state, pageNumber) {
 			state.pageNumber = pageNumber
+		},
+		setSearchQuery(state, searchQuery) {
+			state.searchQuery = searchQuery
 		},
 	},
 	actions: {
