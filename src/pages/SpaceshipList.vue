@@ -22,6 +22,10 @@
           </table>
         </RouterLink>
       </div>
+      <div class="pagination">
+        <button class="pagination__prev" :class="!spaceshipData.prev ? 'disabled' : ''">prev</button>
+        <button class="pagination__next" :class="!spaceshipData.next ? 'disabled' : ''">next</button>
+      </div>
     </div>
     <div class="list__loading" v-else>
       <p>Загрузка...</p>
@@ -48,6 +52,7 @@ function formatUrl(url) {
 
 onMounted(async() => {
   await store.dispatch('fetchSpaceshipData')
+  console.log(spaceshipData.value.next)
 })
 </script>
 
@@ -110,6 +115,32 @@ onMounted(async() => {
               width: 200px;
             }
           }
+        }
+      }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-top: 50px;
+
+      .pagination__prev, .pagination__next {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 30px;
+        width: 150px;
+        border: 1px solid #000;
+        border-radius: 5px;
+        padding: 10px 20px;
+        background: none;
+
+        &.disabled {
+          border: 1px solid #c4c4c4;
+          color: #575757;
+          background: #c4c4c4;
         }
       }
     }
