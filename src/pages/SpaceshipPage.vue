@@ -77,8 +77,6 @@ const currentSpaceship = computed(() => {
 
 onMounted(async () => {
   await store.dispatch('fetchSpaceshipData')
-  console.log(route)
-  console.log(currentSpaceship.value)
 })
 </script>
 

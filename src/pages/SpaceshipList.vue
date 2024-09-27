@@ -23,8 +23,8 @@
         </RouterLink>
       </div>
       <div class="pagination">
-        <button class="pagination__prev" :class="!spaceshipData.prev ? 'disabled' : ''">prev</button>
-        <button class="pagination__next" :class="!spaceshipData.next ? 'disabled' : ''">next</button>
+        <button class="pagination__prev" :class="!spaceshipData.previous ? 'disabled' : ''" @click="prevStep">prev</button>
+        <button class="pagination__next" :class="!spaceshipData.next ? 'disabled' : ''" @click="nextStep">next</button>
       </div>
     </div>
     <div class="list__loading" v-else>
@@ -36,6 +36,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import store from '/src/store/index.js';
+import { useRouter } from 'vue-router';
 
 const spaceshipData = computed(() => store.state.spaceshipData)
 const searchingSpaceship = ref('')
@@ -45,6 +46,32 @@ const spaceshipFilters = computed(() => {
   )
 })
 
+const router = useRouter()
+function getPageNumber(url) {
+  const match = url.match(/page=(\d+)/)
+  return match ? parseInt(match[1], 10) : null
+}
+async function prevStep() {
+  if (spaceshipData.value.previous) {
+    const pageNumber = getPageNumber(spaceshipData.value.previous)
+    if (pageNumber) {
+      store.commit('setPageNumber', pageNumber)
+      await store.dispatch('fetchSpaceshipData')
+      router.push(`/starships/page/${pageNumber}`)
+    }
+  }
+}
+async function nextStep() {
+  if (spaceshipData.value.next) {
+    const pageNumber = getPageNumber(spaceshipData.value.next)
+    if (pageNumber) {
+      store.commit('setPageNumber', pageNumber)
+      await store.dispatch('fetchSpaceshipData')
+      router.push(`/starships/page/${pageNumber}`)
+    }
+  }
+}
+
 function formatUrl(url) {
   const urlPath = url.split('/')
   return urlPath[urlPath.length - 2]
@@ -52,7 +79,6 @@ function formatUrl(url) {
 
 onMounted(async() => {
   await store.dispatch('fetchSpaceshipData')
-  console.log(spaceshipData.value.next)
 })
 </script>
 
